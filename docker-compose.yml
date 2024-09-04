@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  mysql:
+    build: ./mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+
+  flask:
+    build: ./flask_backend
+    depends_on:
+      - mysql
+    ports:
+      - "5000:5000"
+    restart: always
+
+  go:
+    build: ./go_backend
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    restart: always
+
+volumes:
+  mysql_data:
